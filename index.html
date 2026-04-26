@@ -1,0 +1,1991 @@
+<!DOCTYPE html>
+
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Shopping">
+<meta name="theme-color" content="#fdfcfb">
+<title>Shopping Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fdfcfb;
+    --text: #2e2a33;
+    --text-soft: #6b6570;
+    --text-faint: #a8a1ad;
+    --border: rgba(170, 160, 180, 0.2);
+    --border-strong: rgba(170, 160, 180, 0.32);
+
+```
+--pink: #d89aae;
+--pink-surface: rgba(249, 215, 228, 0.5);
+--pink-soft: rgba(216, 154, 174, 0.1);
+
+--purple: #a595c4;
+--purple-surface: rgba(225, 215, 245, 0.5);
+--purple-soft: rgba(165, 149, 196, 0.1);
+
+--blue: #8ca7c9;
+--blue-surface: rgba(210, 225, 245, 0.5);
+--blue-soft: rgba(140, 167, 201, 0.1);
+
+--yellow: #d0b070;
+--yellow-surface: rgba(252, 240, 205, 0.5);
+--yellow-soft: rgba(208, 176, 112, 0.1);
+
+--sage: #8fa886;
+--sage-surface: rgba(220, 235, 210, 0.5);
+--sage-soft: rgba(143, 168, 134, 0.1);
+
+--coral: #d2887a;
+--coral-surface: rgba(250, 218, 210, 0.5);
+--coral-soft: rgba(210, 136, 122, 0.1);
+
+--shadow-sm: 0 1px 2px rgba(80, 60, 90, 0.04), 0 2px 10px rgba(80, 60, 90, 0.03);
+--shadow-md: 0 4px 16px rgba(80, 60, 90, 0.06), 0 8px 32px rgba(80, 60, 90, 0.04);
+--shadow-lg: 0 12px 48px rgba(80, 60, 90, 0.12);
+
+--font: 'Sarabun', -apple-system, system-ui, sans-serif;
+```
+
+}
+
+- { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+margin: 0; padding: 0;
+font-family: var(–font); color: var(–text);
+font-weight: 400;
+-webkit-font-smoothing: antialiased;
+-moz-osx-font-smoothing: grayscale;
+}
+
+body {
+background:
+radial-gradient(ellipse 100% 70% at 10% 10%, rgba(249, 212, 225, 0.6) 0%, transparent 55%),
+radial-gradient(ellipse 70% 50% at 90% 15%, rgba(205, 220, 248, 0.55) 0%, transparent 55%),
+radial-gradient(ellipse 90% 60% at 55% 45%, rgba(225, 210, 245, 0.5) 0%, transparent 60%),
+radial-gradient(ellipse 80% 60% at 25% 90%, rgba(252, 240, 205, 0.55) 0%, transparent 55%),
+radial-gradient(ellipse 75% 55% at 90% 85%, rgba(235, 220, 248, 0.45) 0%, transparent 55%),
+var(–bg);
+background-attachment: fixed;
+min-height: 100vh;
+}
+
+.app { max-width: 480px; margin: 0 auto; padding-bottom: 100px; }
+
+.num { font-feature-settings: “tnum” 1; letter-spacing: -0.01em; }
+
+.icon { display: inline-block; vertical-align: middle; flex-shrink: 0; }
+.icon-stroke { stroke-linecap: round; stroke-linejoin: round; }
+
+/* ───── HEADER ───── */
+.header {
+position: sticky; top: 0; z-index: 20;
+background: rgba(253, 252, 251, 0.78);
+backdrop-filter: blur(26px) saturate(1.4);
+-webkit-backdrop-filter: blur(26px) saturate(1.4);
+border-bottom: 1px solid var(–border);
+padding: 16px 20px 12px;
+}
+.brand-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 2px; }
+.brand {
+font-weight: 600; font-size: 19px;
+letter-spacing: -0.02em; color: var(–text);
+}
+.brand .soft { font-weight: 300; color: var(–text-soft); }
+.controls { display: flex; gap: 8px; align-items: center; }
+.save-status {
+font-size: 11px; color: var(–sage); font-weight: 500;
+opacity: 0; transition: opacity .3s;
+display: flex; align-items: center; gap: 4px;
+}
+.reset-btn {
+display: flex; align-items: center; gap: 4px;
+background: rgba(255,255,255,0.55); color: var(–text-soft);
+border: 1px solid var(–border); border-radius: 999px;
+padding: 5px 9px; font-size: 10px; cursor: pointer;
+font-family: inherit; font-weight: 500;
+white-space: nowrap;
+}
+
+/* ───── TABS ───── */
+.tabs {
+display: flex; gap: 3px; margin-top: 12px;
+background: rgba(255,255,255,0.4);
+border: 1px solid var(–border);
+border-radius: 12px; padding: 3px;
+}
+.tab {
+flex: 1; padding: 9px 0; border-radius: 10px; border: none;
+font-family: inherit; font-size: 13px; font-weight: 500;
+background: transparent; color: var(–text-soft); cursor: pointer;
+display: flex; align-items: center; justify-content: center; gap: 6px;
+transition: all .2s;
+letter-spacing: 0.01em;
+}
+.tab.active { background: rgba(255,255,255,0.95); color: var(–text); box-shadow: var(–shadow-sm); font-weight: 600; }
+.tab-badge {
+font-size: 10px; background: var(–purple); color: #fff;
+padding: 1px 6px; border-radius: 999px; font-weight: 600; margin-left: 2px;
+}
+.tab.active .tab-badge { background: var(–purple); }
+.tab:not(.active) .tab-badge { background: var(–text-faint); }
+
+/* ───── MODE TOGGLE ───── */
+.mode-toggle {
+display: flex; gap: 3px; margin-top: 10px; margin-bottom: 12px;
+background: rgba(255,255,255,0.4);
+border: 1px solid var(–border);
+border-radius: 12px; padding: 3px;
+}
+.mode-btn {
+flex: 1; padding: 7px 0; border-radius: 10px; border: none;
+font-family: inherit; font-size: 12px; font-weight: 500;
+background: transparent; color: var(–text-faint); cursor: pointer;
+display: flex; align-items: center; justify-content: center; gap: 6px;
+transition: all .2s;
+}
+.mode-btn.active { background: rgba(255,255,255,0.95); box-shadow: var(–shadow-sm); }
+.mode-btn.active.deep { color: var(–coral); }
+.mode-btn.active.avg { color: var(–blue); }
+
+/* ───── SUMMARY CARDS ───── */
+.summary-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+.summary-card {
+background: rgba(255,255,255,0.55);
+border: 1px solid var(–border);
+border-radius: 14px; padding: 9px 11px;
+backdrop-filter: blur(12px);
+-webkit-backdrop-filter: blur(12px);
+}
+.summary-label {
+font-size: 10px; color: var(–text-soft); font-weight: 500;
+display: flex; align-items: center; gap: 4px;
+text-transform: uppercase; letter-spacing: 0.05em;
+}
+.summary-value {
+font-size: 18px; font-weight: 700;
+margin-top: 3px; letter-spacing: -0.02em;
+line-height: 1.1;
+}
+.summary-sub { font-size: 10px; color: var(–text-faint); margin-top: 2px; font-weight: 300; }
+.v-sage { color: var(–sage); }
+.v-yellow { color: var(–yellow); }
+.v-coral { color: var(–coral); }
+.v-pink { color: var(–pink); }
+.v-purple { color: var(–purple); }
+.v-blue { color: var(–blue); }
+
+/* ───── CARDS ───── */
+.card {
+background: rgba(255,255,255,0.62);
+backdrop-filter: blur(22px) saturate(1.3);
+-webkit-backdrop-filter: blur(22px) saturate(1.3);
+border: 1px solid var(–border);
+margin: 14px 12px; border-radius: 20px;
+box-shadow: var(–shadow-sm);
+overflow: hidden;
+}
+.card-pad { padding: 18px; }
+.section-title {
+font-size: 16px; font-weight: 600;
+letter-spacing: -0.01em; display: flex; align-items: center; gap: 8px;
+margin-bottom: 14px; color: var(–text);
+}
+
+/* ───── SALARY BOX ───── */
+.salary-box {
+display: flex; align-items: center; gap: 12px; padding: 14px 16px;
+background: linear-gradient(135deg, var(–yellow-surface), rgba(252, 240, 205, 0.3));
+border: 1px solid rgba(208, 176, 112, 0.22);
+border-radius: 14px; margin-bottom: 14px;
+}
+.salary-icon-box {
+width: 38px; height: 38px; border-radius: 12px;
+background: rgba(255,255,255,0.55); color: var(–yellow);
+display: flex; align-items: center; justify-content: center;
+}
+.salary-label {
+font-size: 10px; color: var(–text-soft); font-weight: 500;
+text-transform: uppercase; letter-spacing: 0.08em;
+}
+.salary-main { flex: 1; min-width: 0; }
+.salary-value { font-size: 21px; font-weight: 700; color: var(–text); letter-spacing: -0.02em; line-height: 1.1; }
+.salary-input {
+width: 100%; border: none; background: transparent;
+font-family: inherit; font-size: 21px; font-weight: 700;
+color: var(–text); letter-spacing: -0.02em;
+padding: 0; outline: none;
+}
+.salary-edit-btn {
+background: rgba(255,255,255,0.7); border: 1px solid var(–border);
+color: var(–text-soft); border-radius: 999px;
+padding: 6px 11px; font-size: 11px; cursor: pointer; font-family: inherit;
+display: flex; align-items: center; gap: 4px; font-weight: 500;
+}
+
+.budget-info {
+font-size: 12px; color: var(–text-soft); margin-bottom: 12px;
+display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+}
+.budget-info .v { font-weight: 600; }
+.bar {
+height: 6px; border-radius: 999px;
+background: rgba(170, 160, 180, 0.15);
+display: flex; overflow: hidden; margin-bottom: 16px;
+}
+.bar-seg { transition: width .4s ease; }
+
+/* ───── BREAKDOWN BARS ───── */
+.breakdown { margin-top: 8px; }
+.breakdown-item {
+display: flex; align-items: center; gap: 10px; margin-bottom: 10px;
+}
+.breakdown-bar-wrap {
+flex: 1;
+}
+.breakdown-top {
+display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px;
+}
+.breakdown-label {
+font-size: 12px; font-weight: 500; color: var(–text);
+display: flex; align-items: center; gap: 6px;
+}
+.breakdown-percent {
+font-size: 11px; color: var(–text-soft); font-weight: 500;
+}
+.breakdown-amount {
+font-size: 13px; font-weight: 700; color: var(–text);
+}
+.breakdown-bar {
+height: 8px; border-radius: 999px;
+background: rgba(170, 160, 180, 0.12);
+overflow: hidden;
+}
+.breakdown-fill {
+height: 100%; border-radius: 999px;
+transition: width .5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.breakdown-icon {
+width: 32px; height: 32px; border-radius: 10px;
+display: flex; align-items: center; justify-content: center;
+flex-shrink: 0;
+}
+
+/* ───── FIXED EXPENSES ───── */
+.section-sub {
+font-size: 10px; color: var(–text-soft); margin-bottom: 6px;
+text-transform: uppercase; letter-spacing: 0.1em; font-weight: 500;
+}
+.fixed-row {
+display: flex; align-items: center; gap: 10px; padding: 8px 0;
+border-bottom: 1px solid var(–border);
+}
+.fixed-row:last-of-type { border-bottom: none; }
+.dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.fixed-name { flex: 1; font-size: 13px; color: var(–text); font-weight: 400; }
+.fixed-name-input {
+flex: 1; font-size: 13px; color: var(–text); font-weight: 400;
+border: 1px solid transparent; background: transparent;
+border-radius: 6px; padding: 5px 8px; font-family: inherit;
+min-width: 0; outline: none; transition: all .15s;
+}
+.fixed-name-input:focus { background: rgba(255,255,255,0.9); border-color: var(–border-strong); }
+.fixed-input {
+width: 80px; text-align: right; border: 1px solid transparent;
+background: rgba(255,255,255,0.5);
+border-radius: 8px; padding: 6px 10px;
+font-family: inherit; font-size: 14px; font-weight: 600;
+transition: all .15s; outline: none;
+}
+.fixed-input:focus { background: rgba(255,255,255,0.95); border-color: var(–border-strong); }
+.currency { font-size: 11px; color: var(–text-faint); font-weight: 300; }
+.x-btn {
+background: none; border: none; cursor: pointer; color: var(–text-faint);
+padding: 4px; display: flex; align-items: center; justify-content: center;
+border-radius: 6px;
+}
+.x-btn:active { background: rgba(170, 160, 180, 0.15); color: var(–coral); }
+
+.add-fixed-btn, .add-item-btn {
+margin-top: 10px; background: none;
+border: 1px dashed var(–border-strong); border-radius: 10px;
+padding: 10px; cursor: pointer; font-size: 12px; color: var(–text-soft);
+font-family: inherit; width: 100%;
+display: flex; align-items: center; justify-content: center; gap: 6px;
+font-weight: 500;
+}
+.add-item-btn {
+margin: 10px 14px;
+background: linear-gradient(135deg, rgba(255,255,255,0.5), rgba(255,255,255,0.25));
+border: 1px dashed var(–purple);
+color: var(–purple);
+}
+.add-form { display: flex; gap: 6px; margin-top: 10px; align-items: center; }
+.text-input {
+border: 1px solid var(–border-strong); border-radius: 8px;
+padding: 7px 10px; font-size: 13px; font-family: inherit;
+background: rgba(255,255,255,0.75); outline: none;
+}
+.text-input:focus { background: #fff; border-color: var(–yellow); }
+.btn-confirm {
+background: var(–sage); color: #fff; border: none; border-radius: 8px;
+padding: 7px 12px; cursor: pointer; font-size: 13px; font-weight: 600; font-family: inherit;
+display: flex; align-items: center; justify-content: center;
+}
+.btn-dismiss {
+background: rgba(170, 160, 180, 0.15); color: var(–text-soft);
+border: none; border-radius: 8px;
+padding: 7px 10px; cursor: pointer; font-family: inherit;
+display: flex; align-items: center; justify-content: center;
+}
+
+.two-col { margin-top: 16px; display: flex; gap: 10px; }
+.two-col > div { flex: 1; }
+.field-label {
+font-size: 10px; color: var(–text-soft); font-weight: 500;
+text-transform: uppercase; letter-spacing: 0.08em;
+display: flex; align-items: center; gap: 5px; margin-bottom: 5px;
+}
+.field-input {
+width: 100%; border: 1px solid var(–border);
+background: rgba(255,255,255,0.55);
+border-radius: 10px; padding: 8px 12px;
+font-family: inherit; font-size: 15px; font-weight: 600;
+text-align: right; outline: none;
+}
+.field-input:focus { background: #fff; border-color: var(–border-strong); }
+
+.net-box {
+margin-top: 16px; padding: 14px 16px; border-radius: 14px;
+display: flex; justify-content: space-between; align-items: center;
+border: 1px solid;
+}
+.net-box.pos { background: var(–sage-surface); border-color: rgba(143, 168, 134, 0.3); }
+.net-box.neg { background: var(–coral-surface); border-color: rgba(210, 136, 122, 0.3); }
+.net-label {
+font-size: 11px; font-weight: 500; color: var(–text-soft);
+text-transform: uppercase; letter-spacing: 0.08em;
+display: flex; align-items: center; gap: 6px;
+}
+.net-value { font-size: 24px; font-weight: 700; letter-spacing: -0.02em; }
+.net-value.pos { color: var(–sage); }
+.net-value.neg { color: var(–coral); }
+
+/* ───── CATEGORY ───── */
+.cat-header { padding: 16px 18px; border-bottom: 1px solid var(–border); }
+.cat-header.should { background: linear-gradient(135deg, rgba(225, 240, 215, 0.5), rgba(225, 240, 215, 0.15)); }
+.cat-header.nice { background: linear-gradient(135deg, var(–yellow-surface), rgba(252, 240, 205, 0.2)); }
+.cat-header.big { background: linear-gradient(135deg, var(–pink-surface), rgba(249, 215, 228, 0.2)); }
+.cat-title-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.cat-title-wrap { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+.cat-icon-box {
+width: 36px; height: 36px; border-radius: 11px;
+display: flex; align-items: center; justify-content: center;
+background: rgba(255,255,255,0.65); flex-shrink: 0;
+}
+.cat-icon-box.should { color: var(–sage); }
+.cat-icon-box.nice { color: var(–yellow); }
+.cat-icon-box.big { color: var(–pink); }
+.cat-title {
+font-size: 15px; font-weight: 600;
+letter-spacing: -0.01em; color: var(–text);
+}
+.cat-desc { font-size: 11px; color: var(–text-soft); margin-top: 1px; font-weight: 300; }
+.cat-actions { display: flex; gap: 6px; flex-shrink: 0; }
+.cat-btn {
+background: rgba(255,255,255,0.6); border: 1px solid var(–border-strong);
+border-radius: 999px; padding: 5px 10px;
+font-size: 11px; font-weight: 500; cursor: pointer; font-family: inherit;
+display: flex; align-items: center; gap: 4px;
+color: var(–text-soft);
+}
+.cat-btn:active { background: rgba(255,255,255,0.9); }
+.cat-btn.edit-on { background: var(–purple); color: #fff; border-color: var(–purple); }
+.cat-btn.all-checked { background: var(–sage); color: #fff; border-color: var(–sage); }
+
+.cat-totals {
+display: flex; gap: 14px; margin-top: 12px; font-size: 11px; color: var(–text-soft);
+flex-wrap: wrap;
+}
+.cat-totals .v { font-weight: 600; font-size: 12px; }
+.cat-totals .v.deep { color: var(–coral); }
+.cat-totals .v.avg { color: var(–blue); }
+.cat-totals-sel {
+display: flex; gap: 14px; margin-top: 4px; font-size: 11px;
+color: var(–sage); font-weight: 500;
+flex-wrap: wrap;
+}
+
+.edit-banner {
+margin: 0 14px 8px; padding: 8px 12px;
+background: var(–purple-soft);
+border: 1px solid rgba(165, 149, 196, 0.3);
+border-radius: 10px;
+font-size: 11px; color: var(–purple); font-weight: 500;
+display: flex; align-items: center; gap: 6px;
+}
+
+/* ───── ITEMS ───── */
+.items { padding: 6px 10px; }
+.item {
+display: flex; align-items: center; gap: 12px; padding: 12px;
+border-radius: 12px; cursor: pointer; transition: all .15s;
+border: 1px solid transparent;
+}
+.item.checked { background: var(–sage-soft); border-color: rgba(143, 168, 134, 0.25); }
+.item:not(.checked):active { background: rgba(170, 160, 180, 0.06); }
+.item.edit-mode { background: rgba(255,255,255,0.35); border-color: var(–border); }
+.item.edit-mode:active { background: rgba(255,255,255,0.7); }
+.checkbox {
+width: 22px; height: 22px; border-radius: 7px; flex-shrink: 0;
+border: 1.5px solid var(–border-strong);
+background: rgba(255,255,255,0.5);
+display: flex; align-items: center; justify-content: center;
+transition: all .15s; color: transparent;
+}
+.checkbox.checked { background: var(–sage); border-color: var(–sage); color: #fff; }
+.edit-handle {
+width: 22px; height: 22px; flex-shrink: 0; color: var(–purple);
+display: flex; align-items: center; justify-content: center;
+}
+.item-main { flex: 1; min-width: 0; }
+.item-name { font-size: 14px; font-weight: 400; color: var(–text); word-break: break-word; }
+.item-note { font-size: 11px; color: var(–text-faint); margin-top: 2px; font-weight: 300; }
+.item-right { text-align: right; flex-shrink: 0; }
+.item-price {
+font-size: 15px; font-weight: 600;
+display: inline-flex; align-items: center; gap: 5px;
+padding: 3px 8px; border-radius: 8px;
+color: var(–text); transition: all .15s;
+}
+.item.checked .item-price { color: var(–sage); }
+.item-price:active { background: rgba(170, 160, 180, 0.15); }
+.item-price .edit-icon { opacity: 0.35; color: var(–text-soft); }
+.item-price.edited::before {
+content: “”; display: inline-block;
+width: 5px; height: 5px; border-radius: 50%;
+background: var(–yellow); margin-right: 3px;
+}
+.item-alt-price { font-size: 10px; color: var(–text-faint); margin-top: 1px; font-weight: 400; }
+
+/* ───── BUY BUTTON ───── */
+.buy-btn-wrap {
+padding: 8px 14px 14px;
+}
+.buy-btn {
+width: 100%; padding: 12px; border: none; border-radius: 12px;
+background: linear-gradient(135deg, var(–sage), #7d9674);
+color: #fff; font-family: inherit; font-size: 14px; font-weight: 600;
+cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+box-shadow: 0 2px 8px rgba(143, 168, 134, 0.3);
+transition: all .15s;
+}
+.buy-btn:active { transform: translateY(1px); }
+.buy-btn:disabled {
+background: rgba(170, 160, 180, 0.2); color: var(–text-faint);
+box-shadow: none; cursor: not-allowed;
+}
+
+/* ───── HISTORY ───── */
+.history-empty {
+text-align: center; padding: 48px 24px;
+color: var(–text-faint); font-weight: 300;
+}
+.history-empty-icon {
+width: 60px; height: 60px; margin: 0 auto 16px;
+border-radius: 50%; background: var(–purple-soft);
+display: flex; align-items: center; justify-content: center;
+color: var(–purple);
+}
+.history-empty-title {
+font-size: 15px; font-weight: 600; color: var(–text); margin-bottom: 4px;
+}
+.history-empty-desc { font-size: 13px; }
+
+.history-batch {
+background: rgba(255,255,255,0.62);
+backdrop-filter: blur(22px) saturate(1.3);
+-webkit-backdrop-filter: blur(22px) saturate(1.3);
+border: 1px solid var(–border);
+margin: 14px 12px; border-radius: 20px;
+box-shadow: var(–shadow-sm);
+overflow: hidden;
+}
+.batch-header {
+padding: 14px 16px; border-bottom: 1px solid var(–border);
+background: linear-gradient(135deg, var(–purple-surface), rgba(225, 215, 245, 0.2));
+}
+.batch-header-top {
+display: flex; justify-content: space-between; align-items: center; gap: 10px;
+}
+.batch-date {
+font-size: 13px; font-weight: 600; color: var(–text);
+display: flex; align-items: center; gap: 6px;
+}
+.batch-time { font-size: 11px; color: var(–text-soft); font-weight: 400; }
+.batch-restore-all {
+background: var(–coral); color: #fff; border: none;
+border-radius: 999px; padding: 6px 11px;
+font-size: 11px; font-weight: 600; cursor: pointer; font-family: inherit;
+display: flex; align-items: center; gap: 4px; flex-shrink: 0;
+}
+.batch-stats {
+display: flex; gap: 14px; margin-top: 8px;
+font-size: 11px; color: var(–text-soft);
+}
+.batch-stats .v { font-weight: 600; color: var(–text); }
+
+.history-item {
+display: flex; align-items: center; gap: 12px; padding: 12px 14px;
+border-bottom: 1px solid var(–border);
+}
+.history-item:last-child { border-bottom: none; }
+.history-item-main { flex: 1; min-width: 0; }
+.history-item-name { font-size: 13px; font-weight: 400; color: var(–text); }
+.history-item-note { font-size: 11px; color: var(–text-faint); margin-top: 1px; font-weight: 300; }
+.history-item-price {
+font-size: 14px; font-weight: 600; color: var(–sage);
+flex-shrink: 0;
+}
+.history-item-mode {
+font-size: 10px; color: var(–text-faint);
+text-transform: uppercase; letter-spacing: 0.06em; margin-top: 1px;
+}
+.restore-btn {
+background: rgba(255,255,255,0.7); border: 1px solid var(–border);
+color: var(–coral); border-radius: 999px;
+padding: 5px 10px; font-size: 11px; cursor: pointer; font-family: inherit;
+font-weight: 500; display: flex; align-items: center; gap: 4px;
+flex-shrink: 0;
+}
+.restore-btn:active { background: #fff; }
+
+/* ───── MODAL ───── */
+#modal-container { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 100; pointer-events: none; }
+#modal-container.open { pointer-events: auto; }
+.modal-bg {
+position: absolute; inset: 0;
+background: rgba(46, 42, 51, 0.25);
+backdrop-filter: blur(12px);
+-webkit-backdrop-filter: blur(12px);
+display: flex; align-items: center; justify-content: center;
+padding: 20px;
+animation: fadeIn .2s ease;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.modal {
+background: rgba(255,255,255,0.96);
+backdrop-filter: blur(30px);
+-webkit-backdrop-filter: blur(30px);
+border: 1px solid var(–border);
+border-radius: 22px; padding: 24px;
+width: 100%; max-width: 380px;
+box-shadow: var(–shadow-lg);
+animation: slideUp .25s ease;
+max-height: 90vh; overflow-y: auto;
+}
+@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.modal-header { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.modal-title {
+font-size: 18px; font-weight: 600;
+letter-spacing: -0.01em; color: var(–text);
+}
+.modal-subtitle {
+font-size: 13px; color: var(–text-soft); margin-bottom: 18px;
+word-break: break-word; font-weight: 300;
+}
+.modal-field { margin-bottom: 14px; }
+.modal-label {
+font-size: 10px; font-weight: 500; margin-bottom: 6px; display: flex;
+align-items: center; gap: 5px;
+text-transform: uppercase; letter-spacing: 0.08em;
+color: var(–text-soft);
+}
+.modal-label.deep { color: var(–coral); }
+.modal-label.avg { color: var(–blue); }
+.modal-input {
+width: 100%; padding: 11px 14px;
+border: 1px solid var(–border-strong); border-radius: 12px;
+font-family: inherit; font-size: 15px; font-weight: 500;
+background: rgba(255,255,255,0.85); outline: none;
+color: var(–text);
+}
+.modal-input.price-input { text-align: right; font-weight: 700; font-size: 18px; }
+.modal-input:focus { border-color: var(–purple); background: #fff; }
+.modal-input.deep:focus { border-color: var(–coral); }
+.modal-input.avg:focus { border-color: var(–blue); }
+
+.two-fields { display: flex; gap: 10px; }
+.two-fields > div { flex: 1; }
+
+.modal-buttons { display: flex; gap: 10px; margin-top: 18px; }
+.modal-btn {
+flex: 1; padding: 12px; border-radius: 12px; border: none; cursor: pointer;
+font-size: 14px; font-weight: 600; font-family: inherit;
+display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.modal-btn.save { background: var(–sage); color: #fff; }
+.modal-btn.save:active { background: #7d9674; }
+.modal-btn.cancel { background: rgba(170, 160, 180, 0.15); color: var(–text-soft); }
+.modal-btn.reset {
+background: var(–yellow-surface); color: var(–yellow);
+font-size: 12px; margin-top: 8px; padding: 10px; width: 100%;
+border: 1px solid rgba(208, 176, 112, 0.3);
+}
+.modal-btn.delete {
+background: var(–coral-surface); color: var(–coral);
+font-size: 12px; margin-top: 8px; padding: 10px; width: 100%;
+border: 1px solid rgba(210, 136, 122, 0.3);
+}
+.modal-purchase-list {
+background: var(–sage-soft); border: 1px solid rgba(143, 168, 134, 0.25);
+border-radius: 12px; padding: 12px; margin: 14px 0;
+max-height: 200px; overflow-y: auto;
+}
+.modal-purchase-row {
+display: flex; justify-content: space-between; padding: 4px 0;
+font-size: 12px;
+}
+.modal-purchase-row .n { flex: 1; color: var(–text); }
+.modal-purchase-row .p { font-weight: 600; color: var(–sage); }
+.modal-purchase-total {
+display: flex; justify-content: space-between; padding: 8px 0 0;
+margin-top: 8px; border-top: 1px solid rgba(143, 168, 134, 0.25);
+font-size: 14px; font-weight: 700; color: var(–text);
+}
+
+/* ───── SUMMARY TABLE ───── */
+.sum-table { width: 100%; font-size: 13px; border-collapse: collapse; }
+.sum-table tr { border-bottom: 1px solid var(–border); }
+.sum-table tr:last-child { border-bottom: none; }
+.sum-table td { padding: 10px 0; }
+.sum-table .label {
+color: var(–text-soft); font-weight: 400;
+display: flex; align-items: center; gap: 8px;
+}
+.sum-table .num { text-align: right; font-weight: 600; font-size: 14px; }
+.sum-table .total-row td { padding: 16px 0 4px; border-bottom: none; }
+.sum-table .total-row .label { font-size: 14px; color: var(–text); font-weight: 600; }
+.sum-table .total-row .num { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; }
+.sum-table .total-row .num.pos { color: var(–sage); }
+.sum-table .total-row .num.neg { color: var(–coral); }
+
+.info-box {
+margin-top: 16px; padding: 14px; border-radius: 14px;
+background: rgba(255,255,255,0.45); border: 1px solid var(–border);
+font-size: 12px; color: var(–text-soft);
+}
+.info-box .row { display: flex; justify-content: space-between; padding: 3px 0; }
+.info-box .row .v { font-weight: 600; font-size: 13px; }
+.info-title {
+font-weight: 500; margin-bottom: 8px; color: var(–text);
+display: flex; align-items: center; gap: 6px;
+text-transform: uppercase; letter-spacing: 0.06em; font-size: 11px;
+}
+.italic {
+font-style: italic; margin-top: 10px; font-weight: 300;
+color: var(–text-faint); font-size: 12px;
+}
+
+.footer {
+text-align: center; padding: 20px 24px 8px;
+font-size: 11px; color: var(–text-faint); font-weight: 300;
+line-height: 1.6;
+}
+
+.biggest-chip {
+display: inline-flex; align-items: center; gap: 4px;
+font-size: 10px; font-weight: 600;
+padding: 2px 6px; border-radius: 999px;
+background: var(–coral); color: #fff;
+text-transform: uppercase; letter-spacing: 0.04em;
+}
+</style>
+
+</head>
+<body>
+
+<div class="app">
+  <div id="app"></div>
+</div>
+<div id="modal-container"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════
+// ICONS
+// ═══════════════════════════════════════════════════════════════════
+const ICONS = {
+  bag: '<path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 01-8 0"/>',
+  cart: '<circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 002 1.58h9.78a2 2 0 001.95-1.57l1.65-7.43H5.12"/>',
+  check: '<path d="M20 6L9 17l-5-5"/>',
+  pencil: '<path d="M17 3a2.85 2.83 0 114 4L7.5 20.5 2 22l1.5-5.5L17 3z"/><path d="M15 5l4 4"/>',
+  rotate: '<path d="M3 12a9 9 0 109-9 9.75 9.75 0 00-6.74 2.74L3 8"/><path d="M3 3v5h5"/>',
+  flame: '<path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.15.43-2.3 1-3a2.5 2.5 0 002.5 2.5z"/>',
+  chart: '<path d="M3 3v18h18"/><path d="M7 16v-5"/><path d="M11 16V9"/><path d="M15 16v-3"/><path d="M19 16V7"/>',
+  wallet: '<path d="M19 7V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-2"/><path d="M3 7h16a2 2 0 012 2v6a2 2 0 01-2 2H3"/><circle cx="16" cy="12" r="1.5"/>',
+  trending: '<path d="M22 17l-8.5-8.5-5 5L2 7"/><path d="M16 17h6v-6"/>',
+  home: '<path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/>',
+  bulb: '<path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5a6 6 0 00-12 0c0 1.3.5 2.6 1.5 3.5.8.8 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/>',
+  list: '<path d="M8 6h13"/><path d="M8 12h13"/><path d="M8 18h13"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/>',
+  heart: '<path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>',
+  shield: '<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 01-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 011-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 011.52 0C14.51 3.81 17 5 19 5a1 1 0 011 1z"/>',
+  plus: '<path d="M12 5v14"/><path d="M5 12h14"/>',
+  x: '<path d="M18 6L6 18"/><path d="M6 6l12 12"/>',
+  refresh: '<path d="M3 12a9 9 0 019-9 9.75 9.75 0 016.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 01-9 9 9.75 9.75 0 01-6.74-2.74L3 16"/><path d="M8 16H3v5"/>',
+  sparkle: '<path d="M12 2l2.35 6.65L21 11l-6.65 2.35L12 20l-2.35-6.65L3 11l6.65-2.35L12 2z"/>',
+  receipt: '<path d="M4 2v20l2-1.5L8 22l2-1.5L12 22l2-1.5L16 22l2-1.5L20 22V2l-2 1.5L16 2l-2 1.5L12 2l-2 1.5L8 2 6 3.5z"/><path d="M8 7h8"/><path d="M8 11h8"/><path d="M8 15h5"/>',
+  trash: '<path d="M3 6h18"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"/><path d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2"/>',
+  tag: '<path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><circle cx="7" cy="7" r="1"/>',
+  info: '<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>',
+  package: '<path d="M16.5 9.4l-9-5.19"/><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><path d="M3.27 6.96L12 12.01l8.73-5.05"/><path d="M12 22.08V12"/>',
+  clock: '<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
+  arrowLeft: '<path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/>',
+  piechart: '<path d="M21.21 15.89A10 10 0 118 2.83"/><path d="M22 12A10 10 0 0012 2v10z"/>',
+  download: '<path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/>',
+  upload: '<path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/>',
+  save: '<path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/>',
+};
+
+function icon(name, size = 16, stroke = 1.5) {
+  return `<svg class="icon icon-stroke" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${stroke}">${ICONS[name] || ''}</svg>`;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// DEFAULT DATA
+// ═══════════════════════════════════════════════════════════════════
+const DEFAULT_ITEMS = [
+  { id: 1, name: "หม้อหุงข้าว 1.6-1.8 L", deep: 1200, avg: 1200, cat: "should", note: "" },
+  { id: 2, name: "แฟ้มตราช้าง ×2", deep: 80, avg: 80, cat: "should", note: "" },
+  { id: 3, name: "ตะกร้าล้อเลื่อนพับได้", deep: 1000, avg: 1000, cat: "should", note: "" },
+  { id: 4, name: 'ป้าย "มือใหม่หัดขับ" ×3-4', deep: 80, avg: 80, cat: "should", note: "" },
+  { id: 5, name: "ป้ายอะคริลิกขาว ×4 ปิดใต้เตียง", deep: 100, avg: 100, cat: "should", note: "" },
+  { id: 6, name: "กล่องเก็บของใต้เตียง ×1", deep: 173, avg: 173, cat: "should", note: "ลอง 1 ชิ้นก่อน" },
+  { id: 7, name: "Adapter 2 รู + ชาร์จในรถ", deep: 420, avg: 420, cat: "should", note: "" },
+  { id: 8, name: "ไดร์เป่าผม (สีขาวมุข)", deep: 975, avg: 1200, cat: "should", note: "ปุ่มมีรอย กดง่าย" },
+  { id: 9, name: "น้ำยาขัดไฟหน้า + ลอกสติ๊กเกอร์", deep: 149, avg: 149, cat: "should", note: "" },
+  { id: 10, name: "น้ำยาลบคราบหมึกบนผ้า", deep: 149, avg: 149, cat: "should", note: "" },
+  { id: 11, name: "น้ำยาเคลือบกันน้ำ", deep: 227, avg: 227, cat: "should", note: "" },
+  { id: 12, name: "AirTag ×2 (กุญแจรถ+รถ)", deep: 358, avg: 358, cat: "should", note: "179/ชิ้น" },
+  { id: 13, name: "แก้วน้ำ Owala / Stanley", deep: 1500, avg: 1500, cat: "should", note: "ดูหน้าร้านก่อน" },
+  { id: 14, name: "สาย Lightning ×2 (1m)", deep: 172, avg: 172, cat: "should", note: "86/สาย" },
+  { id: 15, name: "ป้ายเลขที่ห้อง", deep: 239, avg: 239, cat: "should", note: "" },
+  { id: 16, name: "ถังขยะเล็ก", deep: 27, avg: 27, cat: "should", note: "" },
+  { id: 17, name: "เจลล้างหน้า Physiocel", deep: 225, avg: 250, cat: "should", note: "" },
+  { id: 18, name: "ถุงขยะ ขาว+ดำ (ดำมีหูหิ้ว)", deep: 50, avg: 50, cat: "should", note: "" },
+  { id: 19, name: "แมสกล่อง ×5 (150 ชิ้น)", deep: 325, avg: 325, cat: "should", note: "กล่องละ 30" },
+  { id: 20, name: "น้ำมันใส่ผม Honey", deep: 300, avg: 350, cat: "should", note: "" },
+  { id: 21, name: "ลิป Laneige ×2 (Coral+Peach)", deep: 944, avg: 944, cat: "should", note: "472/ชิ้น" },
+  { id: 22, name: "Laneige แป้ง+เซรั่ม+Base (3 ชิ้น)", deep: 1001, avg: 1200, cat: "should", note: "" },
+  { id: 23, name: "กระจกตั้งโต๊ะเล็ก (ขาว)", deep: 99, avg: 99, cat: "should", note: "" },
+  { id: 24, name: "ตะข่ายใส่ผ้าซัก (2ใหญ่+2เล็ก)", deep: 164, avg: 164, cat: "should", note: "ใหญ่ 52 / เล็ก 30" },
+  { id: 25, name: "ร่ม", deep: 100, avg: 100, cat: "should", note: "" },
+  { id: 30, name: "กล่องยาวใส่ตะหลิว/ไม้มวย", deep: 200, avg: 300, cat: "nice", note: "ประมาณราคา" },
+  { id: 31, name: "เครื่องปั่น Xiaomi", deep: 2100, avg: 2100, cat: "nice", note: "" },
+  { id: 32, name: "ปลั๊กไฟ 5 รู (แสงน้อย)", deep: 319, avg: 319, cat: "nice", note: "" },
+  { id: 33, name: "รองเท้า Training / ดำล้วน", deep: 2000, avg: 5000, cat: "nice", note: "" },
+  { id: 34, name: "ลำโพง Bose กันน้ำ", deep: 3700, avg: 3700, cat: "nice", note: "" },
+  { id: 35, name: "ตะกร้าใส่ผ้า ×2 (ไม่มีล้อ)", deep: 440, avg: 440, cat: "nice", note: "" },
+  { id: 36, name: "สติ๊กเกอร์ PP ติดขวด/กล่อง", deep: 47, avg: 47, cat: "nice", note: "" },
+  { id: 37, name: "บรา 38/85 ×3", deep: 900, avg: 900, cat: "nice", note: "ชิ้นละไม่เกิน 300" },
+  { id: 38, name: "รองเท้า Skechers รัดส้น", deep: 1500, avg: 2000, cat: "nice", note: "ส้นไม่สูงมาก" },
+  { id: 39, name: "บันได 3 ขั้น", deep: 300, avg: 300, cat: "nice", note: "ดูของบนชั้นสูง" },
+  { id: 40, name: "E-Watch Xiaomi", deep: 2000, avg: 2500, cat: "nice", note: "" },
+  { id: 50, name: "เครื่องซักผ้า (Xiaomi / Electrolux)", deep: 8000, avg: 20000, cat: "big", note: "เลือกซักอัน" },
+  { id: 51, name: "ตู้เย็น TCL ขาว 18Q", deep: 17000, avg: 17000, cat: "big", note: "" },
+  { id: 52, name: "ตู้เก็บเอกสารเหล็ก บานเลื่อน", deep: 3900, avg: 3900, cat: "big", note: "สีขาว" },
+  { id: 53, name: "ตู้เสื้อผ้า ขาว บานเลื่อน", deep: 6000, avg: 6000, cat: "big", note: "" },
+  { id: 54, name: "เครื่องกรองน้ำ RO", deep: 2200, avg: 2200, cat: "big", note: "" },
+  { id: 55, name: "บานเลื่อนกั้นห้องครัว", deep: 5500, avg: 13000, cat: "big", note: "" },
+  { id: 56, name: "พัดลมดูดควัน 8 นิ้ว", deep: 415, avg: 415, cat: "big", note: "" },
+  { id: 57, name: "เปลี่ยนหน้าต่าง 2 บาน + ห้องน้ำ", deep: 10000, avg: 10000, cat: "big", note: "บานละ 4,400 + ห้องน้ำ 1,200" },
+];
+
+const DEFAULT_FIXED = [
+  { id: "f1", name: "ค่าน้ำ+ไฟ", amount: 2000, color: "#d89aae" },
+  { id: "f2", name: "ค่าเดินทาง", amount: 3000, color: "#d0b070" },
+  { id: "f3", name: "ค่าเน็ต", amount: 800, color: "#8ca7c9" },
+  { id: "f4", name: "YouTube Premium", amount: 199, color: "#a595c4" },
+  { id: "f5", name: "ค่าอาหาร", amount: 2500, color: "#c99aaa" },
+];
+
+const CAT_META = {
+  should: { label: "ควรซื้อ", desc: "จำเป็นต้องใช้", iconName: "cart" },
+  nice: { label: "ดีที่มี", desc: "ถ้ามีงบเหลือ", iconName: "bulb" },
+  big: { label: "ของใหญ่", desc: "ต้องวางแผนเก็บ", iconName: "home" },
+};
+
+// ⚠️ STORAGE_KEY ตัวนี้จะไม่เปลี่ยนอีก เพื่อป้องกันข้อมูลหาย
+const STORAGE_KEY = "shopping-tracker-data";
+const OLD_KEYS = ["shopping-tracker-v5", "shopping-tracker-v4", "shopping-tracker-v3", "shopping-tracker-v2", "shopping-tracker-v1", "shopping-tracker-state-v1"];
+
+// ═══════════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════════
+let state = {
+  tab: 'shop',          // 'shop' | 'history'
+  items: DEFAULT_ITEMS.map(x => ({ ...x })),
+  selected: [],
+  priceMode: "deep",
+  fixed: DEFAULT_FIXED.map(x => ({ ...x })),
+  savings: 0, emergency: 0, salary: 24000,
+  purchases: [],        // [{ id, date: ISO string, priceMode, items: [{name, price, note, cat, originalId}] }]
+  editingSalary: false, showAddFixed: false,
+  editingCat: null,
+  modal: null,          // null | {type, ...}
+};
+
+// ═══════════════════════════════════════════════════════════════════
+// STORAGE
+// ═══════════════════════════════════════════════════════════════════
+function save() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      tab: state.tab,
+      items: state.items, selected: state.selected, priceMode: state.priceMode,
+      fixed: state.fixed, savings: state.savings, emergency: state.emergency, salary: state.salary,
+      purchases: state.purchases,
+    }));
+    showSaveStatus();
+  } catch (e) {}
+}
+
+function load() {
+  try {
+    let raw = localStorage.getItem(STORAGE_KEY);
+
+    // ถ้ายังไม่มีข้อมูลใน key ใหม่ ลองหาใน key เก่าแล้วย้ายมา
+    if (!raw) {
+      for (const oldKey of OLD_KEYS) {
+        const oldData = localStorage.getItem(oldKey);
+        if (oldData) {
+          raw = oldData;
+          localStorage.setItem(STORAGE_KEY, oldData);
+          console.log(`กู้ข้อมูลจาก ${oldKey} มาสู่ ${STORAGE_KEY} แล้ว`);
+          break;
+        }
+      }
+    }
+
+    if (!raw) return;
+    const s = JSON.parse(raw);
+    if (s.tab) state.tab = s.tab;
+    if (s.items && Array.isArray(s.items)) state.items = s.items;
+    if (s.selected) state.selected = s.selected;
+    if (s.priceMode) state.priceMode = s.priceMode;
+    if (s.fixed) state.fixed = s.fixed;
+    if (typeof s.savings === "number") state.savings = s.savings;
+    if (typeof s.emergency === "number") state.emergency = s.emergency;
+    if (typeof s.salary === "number") state.salary = s.salary;
+    if (s.purchases && Array.isArray(s.purchases)) state.purchases = s.purchases;
+  } catch (e) { console.warn("Load error:", e); }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// EXPORT / IMPORT
+// ═══════════════════════════════════════════════════════════════════
+function exportData() {
+  try {
+    const data = {
+      version: "shopping-tracker-1.0",
+      exportedAt: new Date().toISOString(),
+      items: state.items, selected: state.selected, priceMode: state.priceMode,
+      fixed: state.fixed, savings: state.savings, emergency: state.emergency,
+      salary: state.salary, purchases: state.purchases,
+    };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    const today = new Date().toISOString().slice(0, 10);
+    a.href = url;
+    a.download = `shopping-tracker-backup-${today}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showSaveStatus();
+  } catch (e) {
+    alert("สำรองข้อมูลไม่สำเร็จ: " + e.message);
+  }
+}
+
+function triggerImport() {
+  const input = document.createElement("input");
+  input.type = "file";
+  input.accept = ".json,application/json";
+  input.onchange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      try {
+        const s = JSON.parse(ev.target.result);
+        if (!s.items || !Array.isArray(s.items)) throw new Error("ไฟล์ไม่ถูกต้อง");
+        pendingImport = s;
+        state.modal = { type: 'confirmImport' };
+        renderModal();
+      } catch (err) {
+        alert("นำเข้าไฟล์ไม่ได้: " + err.message);
+      }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
+let pendingImport = null;
+function doImportConfirmed() {
+  if (!pendingImport) return;
+  const data = pendingImport;
+  if (data.items) state.items = data.items;
+  if (data.selected) state.selected = data.selected;
+  if (data.priceMode) state.priceMode = data.priceMode;
+  if (data.fixed) state.fixed = data.fixed;
+  if (typeof data.savings === "number") state.savings = data.savings;
+  if (typeof data.emergency === "number") state.emergency = data.emergency;
+  if (typeof data.salary === "number") state.salary = data.salary;
+  if (data.purchases) state.purchases = data.purchases;
+  pendingImport = null;
+  state.modal = null;
+  renderModal(); renderApp(); save();
+}
+
+let saveTimer = null;
+function saveDebounced() { clearTimeout(saveTimer); saveTimer = setTimeout(save, 300); }
+
+let statusTimer = null;
+function showSaveStatus() {
+  const el = document.getElementById("save-status");
+  if (!el) return;
+  el.style.opacity = 1;
+  clearTimeout(statusTimer);
+  statusTimer = setTimeout(() => { el.style.opacity = 0; }, 1500);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════════════════
+const fmt = n => n.toLocaleString("th-TH");
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+function isItemEdited(item) {
+  const def = DEFAULT_ITEMS.find(d => d.id === item.id);
+  if (!def) return true;
+  return def.deep !== item.deep || def.avg !== item.avg || def.name !== item.name;
+}
+
+function nextId() { return Math.max(0, ...state.items.map(i => i.id), 0) + 1; }
+
+function formatDate(iso) {
+  const d = new Date(iso);
+  const months = ["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."];
+  return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear() + 543}`;
+}
+function formatTime(iso) {
+  const d = new Date(iso);
+  const h = d.getHours().toString().padStart(2, "0");
+  const m = d.getMinutes().toString().padStart(2, "0");
+  return `${h}:${m} น.`;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// ACTIONS
+// ═══════════════════════════════════════════════════════════════════
+function setTab(t) { state.tab = t; renderApp(); saveDebounced(); }
+
+function toggle(id) {
+  const i = state.selected.indexOf(id);
+  if (i >= 0) state.selected.splice(i, 1); else state.selected.push(id);
+  renderApp(); saveDebounced();
+}
+function selectAllInCat(cat) {
+  const ids = state.items.filter(i => i.cat === cat).map(i => i.id);
+  const allChecked = ids.every(id => state.selected.includes(id));
+  if (allChecked) state.selected = state.selected.filter(id => !ids.includes(id));
+  else ids.forEach(id => { if (!state.selected.includes(id)) state.selected.push(id); });
+  renderApp(); saveDebounced();
+}
+function setMode(m) { state.priceMode = m; renderApp(); saveDebounced(); }
+function setSalary(v) { state.salary = Math.max(0, +v || 0); renderApp(); saveDebounced(); }
+function toggleSalaryEdit() { state.editingSalary = !state.editingSalary; renderApp(); }
+function updateFixed(id, amt) {
+  const f = state.fixed.find(x => x.id === id);
+  if (f) { f.amount = Math.max(0, +amt || 0); renderApp(); saveDebounced(); }
+}
+function updateFixedName(id, name) {
+  const f = state.fixed.find(x => x.id === id);
+  if (f && name.trim()) { f.name = name.trim(); renderApp(); saveDebounced(); }
+}
+function removeFixed(id) { state.fixed = state.fixed.filter(x => x.id !== id); renderApp(); saveDebounced(); }
+function addFixedSubmit() {
+  const nameEl = document.getElementById('new-fixed-name');
+  const amtEl = document.getElementById('new-fixed-amt');
+  if (!nameEl || !amtEl) return;
+  const name = nameEl.value.trim(); const amount = +amtEl.value;
+  if (!name || !amount) return;
+  const colors = ["#a595c4", "#c99aaa", "#8ca7c9", "#d89aae", "#d0b070"];
+  state.fixed.push({ id: "f" + Date.now(), name, amount, color: colors[state.fixed.length % colors.length] });
+  state.showAddFixed = false;
+  renderApp(); saveDebounced();
+}
+function setSavings(v) { state.savings = Math.max(0, +v || 0); renderApp(); saveDebounced(); }
+function setEmergency(v) { state.emergency = Math.max(0, +v || 0); renderApp(); saveDebounced(); }
+function toggleAddFixed() { state.showAddFixed = !state.showAddFixed; renderApp(); }
+
+function toggleCatEdit(cat) { state.editingCat = (state.editingCat === cat) ? null : cat; renderApp(); }
+
+// ── Buy action ──
+function buyItemsInCat(cat) {
+  const ids = state.items.filter(i => i.cat === cat && state.selected.includes(i.id)).map(i => i.id);
+  if (ids.length === 0) return;
+  const items = state.items.filter(i => ids.includes(i.id));
+  state.modal = {
+    type: 'confirmBuy',
+    items: items.map(i => ({
+      name: i.name, note: i.note, cat: i.cat, originalId: i.id,
+      price: state.priceMode === 'deep' ? i.deep : i.avg,
+    })),
+    cat,
+  };
+  renderModal();
+}
+
+function confirmBuyNow() {
+  if (!state.modal || state.modal.type !== 'confirmBuy') return;
+  const batch = {
+    id: 'p' + Date.now(),
+    date: new Date().toISOString(),
+    priceMode: state.priceMode,
+    items: state.modal.items,
+  };
+  state.purchases.unshift(batch);
+  // remove from items list
+  const boughtIds = state.modal.items.map(i => i.originalId);
+  state.items = state.items.filter(i => !boughtIds.includes(i.id));
+  state.selected = state.selected.filter(id => !boughtIds.includes(id));
+  state.modal = null;
+  renderModal(); renderApp(); saveDebounced();
+}
+
+// ── Restore ──
+function restoreBatch(batchId) {
+  const batch = state.purchases.find(p => p.id === batchId);
+  if (!batch) return;
+  state.modal = {
+    type: 'confirmRestoreBatch',
+    batchId,
+    itemCount: batch.items.length,
+    date: batch.date,
+  };
+  renderModal();
+}
+
+function doRestoreBatch(batchId) {
+  const batch = state.purchases.find(p => p.id === batchId);
+  if (!batch) { state.modal = null; renderModal(); return; }
+
+  // restore each item back to main list
+  batch.items.forEach(it => {
+    const def = DEFAULT_ITEMS.find(d => d.id === it.originalId);
+    const existing = state.items.find(i => i.id === it.originalId);
+    if (existing) return; // already there
+    const id = def ? it.originalId : nextId();
+    const priceField = batch.priceMode === 'deep' ? 'deep' : 'avg';
+    const other = def ? (batch.priceMode === 'deep' ? def.avg : def.deep) : it.price;
+    state.items.push({
+      id, name: it.name, cat: it.cat, note: it.note || '',
+      [priceField]: it.price,
+      [priceField === 'deep' ? 'avg' : 'deep']: other,
+    });
+  });
+  state.purchases = state.purchases.filter(p => p.id !== batchId);
+  state.modal = null;
+  renderModal(); renderApp(); saveDebounced();
+}
+
+function restoreOneItem(batchId, originalId) {
+  const batch = state.purchases.find(p => p.id === batchId);
+  if (!batch) return;
+  const it = batch.items.find(i => i.originalId === originalId);
+  if (!it) return;
+
+  const def = DEFAULT_ITEMS.find(d => d.id === it.originalId);
+  const existing = state.items.find(i => i.id === it.originalId);
+  if (!existing) {
+    const id = def ? it.originalId : nextId();
+    const priceField = batch.priceMode === 'deep' ? 'deep' : 'avg';
+    const other = def ? (batch.priceMode === 'deep' ? def.avg : def.deep) : it.price;
+    state.items.push({
+      id, name: it.name, cat: it.cat, note: it.note || '',
+      [priceField]: it.price,
+      [priceField === 'deep' ? 'avg' : 'deep']: other,
+    });
+  }
+
+  batch.items = batch.items.filter(i => i.originalId !== originalId);
+  if (batch.items.length === 0) {
+    state.purchases = state.purchases.filter(p => p.id !== batchId);
+  }
+  renderApp(); saveDebounced();
+}
+
+// ── Modal for edit/add items ──
+function openPriceEdit(itemId, e) {
+  if (e) { e.stopPropagation(); e.preventDefault(); }
+  state.modal = { type: 'price', itemId };
+  renderModal();
+}
+function openItemEdit(itemId, e) {
+  if (e) { e.stopPropagation(); e.preventDefault(); }
+  state.modal = { type: 'full', itemId };
+  renderModal();
+}
+function openAddItem(cat) {
+  state.modal = { type: 'full', itemId: null, cat };
+  renderModal();
+}
+function closeModal() { state.modal = null; renderModal(); }
+
+function saveModal() {
+  if (!state.modal) return;
+  const m = state.modal;
+
+  if (m.type === 'price') {
+    const deepEl = document.getElementById('edit-deep');
+    const avgEl = document.getElementById('edit-avg');
+    const item = state.items.find(i => i.id === m.itemId);
+    if (item && deepEl && avgEl) {
+      item.deep = Math.max(0, +deepEl.value || 0);
+      item.avg = Math.max(0, +avgEl.value || 0);
+    }
+  } else if (m.type === 'full') {
+    const nameEl = document.getElementById('edit-name');
+    const deepEl = document.getElementById('edit-deep');
+    const avgEl = document.getElementById('edit-avg');
+    const noteEl = document.getElementById('edit-note');
+    if (!nameEl || !nameEl.value.trim()) { alert('กรุณาใส่ชื่อรายการ'); return; }
+    const data = {
+      name: nameEl.value.trim(),
+      deep: Math.max(0, +deepEl.value || 0),
+      avg: Math.max(0, +avgEl.value || 0),
+      note: noteEl.value.trim(),
+    };
+    if (m.itemId == null) {
+      state.items.push({ id: nextId(), ...data, cat: m.cat });
+    } else {
+      const item = state.items.find(i => i.id === m.itemId);
+      if (item) Object.assign(item, data);
+    }
+  }
+  state.modal = null;
+  renderModal(); renderApp(); saveDebounced();
+}
+
+function deleteItemFromModal() {
+  if (!state.modal || state.modal.itemId == null) return;
+  const item = state.items.find(i => i.id === state.modal.itemId);
+  if (!item) return;
+  state.modal = { type: 'confirmDeleteItem', itemId: item.id, itemName: item.name };
+  renderModal();
+}
+
+function doDeleteItem(itemId) {
+  state.items = state.items.filter(i => i.id !== itemId);
+  state.selected = state.selected.filter(id => id !== itemId);
+  state.modal = null;
+  renderModal(); renderApp(); saveDebounced();
+}
+
+function resetPriceInForm() {
+  if (!state.modal || state.modal.itemId == null) return;
+  const def = DEFAULT_ITEMS.find(d => d.id === state.modal.itemId);
+  if (!def) return;
+  const nameEl = document.getElementById('edit-name');
+  const deepEl = document.getElementById('edit-deep');
+  const avgEl = document.getElementById('edit-avg');
+  const noteEl = document.getElementById('edit-note');
+  if (nameEl) nameEl.value = def.name;
+  if (deepEl) deepEl.value = def.deep;
+  if (avgEl) avgEl.value = def.avg;
+  if (noteEl) noteEl.value = def.note || '';
+}
+
+function handleModalBgClick(e) { if (e.target.id === 'modal-bg') closeModal(); }
+
+function resetAll() {
+  state.modal = { type: 'confirmReset' };
+  renderModal();
+}
+
+function doResetAll() {
+  localStorage.removeItem(STORAGE_KEY);
+  state = {
+    tab: 'shop',
+    items: DEFAULT_ITEMS.map(x => ({ ...x })), selected: [], priceMode: "deep",
+    fixed: DEFAULT_FIXED.map(x => ({ ...x })), savings: 0, emergency: 0, salary: 24000,
+    purchases: [],
+    editingSalary: false, showAddFixed: false, editingCat: null, modal: null,
+  };
+  renderApp(); renderModal(); save();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// COMPUTED
+// ═══════════════════════════════════════════════════════════════════
+function compute() {
+  const shopSpend = state.items.filter(i => state.selected.includes(i.id))
+    .reduce((s, i) => s + (state.priceMode === "deep" ? i.deep : i.avg), 0);
+  const fixedTotal = state.fixed.reduce((s, f) => s + f.amount, 0);
+  const totalSpend = fixedTotal + state.savings + state.emergency + shopSpend;
+  return { shopSpend, fixedTotal, totalSpend, remaining: state.salary - totalSpend };
+}
+function catTotals() {
+  const out = {};
+  ["should", "nice", "big"].forEach(c => {
+    const items = state.items.filter(i => i.cat === c);
+    const sel = items.filter(i => state.selected.includes(i.id));
+    out[c] = {
+      count: items.length, selCount: sel.length,
+      deepAll: items.reduce((s, i) => s + i.deep, 0),
+      avgAll: items.reduce((s, i) => s + i.avg, 0),
+      deepSel: sel.reduce((s, i) => s + i.deep, 0),
+      avgSel: sel.reduce((s, i) => s + i.avg, 0),
+    };
+  });
+  return out;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// RENDER MODAL
+// ═══════════════════════════════════════════════════════════════════
+function renderModal() {
+  const container = document.getElementById("modal-container");
+  if (!state.modal) {
+    container.innerHTML = ""; container.classList.remove("open"); return;
+  }
+
+  const m = state.modal;
+  let modalHtml = '';
+
+  if (m.type === 'confirmImport') {
+    const d = pendingImport || {};
+    const itemCount = d.items ? d.items.length : 0;
+    const purchaseCount = d.purchases ? d.purchases.length : 0;
+    modalHtml = `
+      <div class="modal-header">
+        ${icon('upload', 20)}
+        <div class="modal-title">กู้คืนข้อมูล?</div>
+      </div>
+      <div class="modal-subtitle">
+        ข้อมูลปัจจุบันจะถูก<b>แทนที่</b>ด้วยข้อมูลจากไฟล์
+      </div>
+
+      <div class="modal-purchase-list">
+        <div class="modal-purchase-row">
+          <span class="n">รายการสินค้า</span>
+          <span class="p num">${itemCount} ชิ้น</span>
+        </div>
+        <div class="modal-purchase-row">
+          <span class="n">ค่าใช้จ่ายประจำ</span>
+          <span class="p num">${d.fixed ? d.fixed.length : 0} รายการ</span>
+        </div>
+        <div class="modal-purchase-row">
+          <span class="n">ประวัติซื้อแล้ว</span>
+          <span class="p num">${purchaseCount} ครั้ง</span>
+        </div>
+        ${d.exportedAt ? `
+          <div class="modal-purchase-row" style="color: var(--text-faint); font-size: 11px;">
+            <span class="n">สำรองเมื่อ</span>
+            <span>${formatDate(d.exportedAt)}</span>
+          </div>
+        ` : ''}
+      </div>
+
+      <div class="modal-buttons">
+        <button class="modal-btn cancel" onclick="closeModal()">${icon('x', 14)} ยกเลิก</button>
+        <button class="modal-btn save" onclick="doImportConfirmed()">${icon('check', 14)} กู้คืน</button>
+      </div>
+    `;
+  } else if (m.type === 'confirmRestoreBatch') {
+    modalHtml = `
+      <div class="modal-header">
+        ${icon('arrowLeft', 20)}
+        <div class="modal-title">ย้อนคืนทั้งหมด?</div>
+      </div>
+      <div class="modal-subtitle">
+        ย้อนรายการทั้งหมด <b>${m.itemCount} ชิ้น</b> จาก ${formatDate(m.date)}<br>
+        กลับไปเป็น "ยังไม่ซื้อ" · ประวัติครั้งนี้จะถูกลบ
+      </div>
+
+      <div class="modal-buttons">
+        <button class="modal-btn cancel" onclick="closeModal()">${icon('x', 14)} ยกเลิก</button>
+        <button class="modal-btn save" onclick="doRestoreBatch('${m.batchId}')">${icon('check', 14)} ยืนยัน</button>
+      </div>
+    `;
+  } else if (m.type === 'confirmDeleteItem') {
+    modalHtml = `
+      <div class="modal-header">
+        ${icon('trash', 20)}
+        <div class="modal-title">ลบรายการ?</div>
+      </div>
+      <div class="modal-subtitle">${esc(m.itemName)}</div>
+
+      <div class="modal-buttons">
+        <button class="modal-btn cancel" onclick="closeModal()">${icon('x', 14)} ยกเลิก</button>
+        <button class="modal-btn save" style="background: var(--coral);" onclick="doDeleteItem(${m.itemId})">${icon('trash', 14)} ลบ</button>
+      </div>
+    `;
+  } else if (m.type === 'confirmReset') {
+    modalHtml = `
+      <div class="modal-header">
+        ${icon('refresh', 20)}
+        <div class="modal-title">รีเซ็ตทั้งหมด?</div>
+      </div>
+      <div class="modal-subtitle">
+        รายการ, ของที่ติ๊ก, ประวัติซื้อ, งบประมาณ<br>จะกลับไปเป็นค่าเริ่มต้นทั้งหมด
+      </div>
+
+      <div class="modal-buttons">
+        <button class="modal-btn cancel" onclick="closeModal()">${icon('x', 14)} ยกเลิก</button>
+        <button class="modal-btn save" style="background: var(--coral);" onclick="doResetAll()">${icon('refresh', 14)} รีเซ็ต</button>
+      </div>
+    `;
+  } else if (m.type === 'confirmBuy') {
+    const total = m.items.reduce((s, i) => s + i.price, 0);
+    modalHtml = `
+      <div class="modal-header">
+        ${icon('package', 20)}
+        <div class="modal-title">ยืนยันการซื้อ</div>
+      </div>
+      <div class="modal-subtitle">
+        ${CAT_META[m.cat].label} · ${m.items.length} รายการ · ราคา ${state.priceMode === 'deep' ? 'Deep' : 'Avg'}
+      </div>
+
+      <div class="modal-purchase-list">
+        ${m.items.map(i => `
+          <div class="modal-purchase-row">
+            <span class="n">${esc(i.name)}</span>
+            <span class="p num">฿${fmt(i.price)}</span>
+          </div>
+        `).join('')}
+        <div class="modal-purchase-total">
+          <span>รวมทั้งหมด</span>
+          <span class="num">฿${fmt(total)}</span>
+        </div>
+      </div>
+
+      <div style="font-size: 12px; color: var(--text-soft); padding: 0 2px; line-height: 1.5;">
+        รายการเหล่านี้จะถูกย้ายไปที่แท็บ "ประวัติซื้อแล้ว" พร้อมวันเวลา และย้อนคืนกลับมาได้ทีหลัง
+      </div>
+
+      <div class="modal-buttons">
+        <button class="modal-btn cancel" onclick="closeModal()">${icon('x', 14)} ยกเลิก</button>
+        <button class="modal-btn save" onclick="confirmBuyNow()">${icon('check', 14)} ยืนยันซื้อ</button>
+      </div>
+    `;
+  } else if (m.type === 'price') {
+    const item = state.items.find(i => i.id === m.itemId);
+    if (!item) { state.modal = null; renderModal(); return; }
+    const def = DEFAULT_ITEMS.find(d => d.id === item.id);
+    const edited = isItemEdited(item);
+
+    modalHtml = `
+      <div class="modal-header">
+        ${icon('pencil', 20)}
+        <div class="modal-title">แก้ไขราคา</div>
+      </div>
+      <div class="modal-subtitle">${esc(item.name)}</div>
+
+      <div class="two-fields">
+        <div class="modal-field">
+          <label class="modal-label deep">${icon('flame', 12)} Deep</label>
+          <input type="number" class="modal-input price-input deep" id="edit-deep" value="${item.deep}" inputmode="numeric">
+        </div>
+        <div class="modal-field">
+          <label class="modal-label avg">${icon('chart', 12)} Avg</label>
+          <input type="number" class="modal-input price-input avg" id="edit-avg" value="${item.avg}" inputmode="numeric">
+        </div>
+      </div>
+
+      <div class="modal-buttons">
+        <button class="modal-btn cancel" onclick="closeModal()">${icon('x', 14)} ยกเลิก</button>
+        <button class="modal-btn save" onclick="saveModal()">${icon('check', 14)} บันทึก</button>
+      </div>
+
+      ${edited && def ? `
+        <button class="modal-btn reset" onclick="resetPriceInForm()">
+          ${icon('rotate', 12)} คืนราคาเดิม · Deep ฿${fmt(def.deep)} / Avg ฿${fmt(def.avg)}
+        </button>
+      ` : ''}
+    `;
+  } else if (m.type === 'full') {
+    const isAdd = m.itemId == null;
+    const item = isAdd ? null : state.items.find(i => i.id === m.itemId);
+    if (!isAdd && !item) { state.modal = null; renderModal(); return; }
+    const def = !isAdd ? DEFAULT_ITEMS.find(d => d.id === item.id) : null;
+    const edited = !isAdd && isItemEdited(item);
+
+    modalHtml = `
+      <div class="modal-header">
+        ${icon(isAdd ? 'plus' : 'pencil', 20)}
+        <div class="modal-title">${isAdd ? 'เพิ่มรายการใหม่' : 'แก้ไขรายการ'}</div>
+      </div>
+      <div class="modal-subtitle">${isAdd ? CAT_META[m.cat].label : CAT_META[item.cat].label}</div>
+
+      <div class="modal-field">
+        <label class="modal-label">${icon('tag', 12)} ชื่อรายการ</label>
+        <input type="text" class="modal-input" id="edit-name"
+          value="${isAdd ? '' : esc(item.name)}" placeholder="เช่น หม้อหุงข้าว">
+      </div>
+
+      <div class="two-fields">
+        <div class="modal-field">
+          <label class="modal-label deep">${icon('flame', 12)} ราคา Deep</label>
+          <input type="number" class="modal-input price-input deep" id="edit-deep"
+            value="${isAdd ? '' : item.deep}" placeholder="0" inputmode="numeric">
+        </div>
+        <div class="modal-field">
+          <label class="modal-label avg">${icon('chart', 12)} ราคา Avg</label>
+          <input type="number" class="modal-input price-input avg" id="edit-avg"
+            value="${isAdd ? '' : item.avg}" placeholder="0" inputmode="numeric">
+        </div>
+      </div>
+
+      <div class="modal-field">
+        <label class="modal-label">${icon('info', 12)} หมายเหตุ (ไม่บังคับ)</label>
+        <input type="text" class="modal-input" id="edit-note"
+          value="${isAdd ? '' : esc(item.note || '')}" placeholder="รายละเอียดเพิ่มเติม">
+      </div>
+
+      <div class="modal-buttons">
+        <button class="modal-btn cancel" onclick="closeModal()">${icon('x', 14)} ยกเลิก</button>
+        <button class="modal-btn save" onclick="saveModal()">${icon('check', 14)} ${isAdd ? 'เพิ่ม' : 'บันทึก'}</button>
+      </div>
+
+      ${edited && def ? `
+        <button class="modal-btn reset" onclick="resetPriceInForm()">${icon('rotate', 12)} คืนค่าเดิม</button>
+      ` : ''}
+
+      ${!isAdd ? `
+        <button class="modal-btn delete" onclick="deleteItemFromModal()">${icon('trash', 12)} ลบรายการนี้</button>
+      ` : ''}
+    `;
+  }
+
+  container.classList.add("open");
+  container.innerHTML = `
+    <div class="modal-bg" id="modal-bg" onclick="handleModalBgClick(event)">
+      <div class="modal" onclick="event.stopPropagation()">${modalHtml}</div>
+    </div>
+  `;
+
+  if (m.type === 'full' && m.itemId == null) {
+    setTimeout(() => { const el = document.getElementById('edit-name'); if (el) el.focus(); }, 100);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// RENDER MAIN
+// ═══════════════════════════════════════════════════════════════════
+function renderApp() {
+  if (state.tab === 'history') {
+    renderHistoryTab();
+  } else {
+    renderShopTab();
+  }
+}
+
+function renderHeader() {
+  const historyCount = state.purchases.reduce((s, p) => s + p.items.length, 0);
+  return `
+  <div class="header">
+    <div class="brand-row">
+      <div class="brand">shopping<span class="soft"> tracker</span></div>
+      <div class="controls">
+        <span id="save-status" class="save-status">${icon('check', 12)} บันทึก</span>
+        <button class="reset-btn" onclick="exportData()" title="สำรองข้อมูล">${icon('download', 12)} สำรอง</button>
+        <button class="reset-btn" onclick="triggerImport()" title="กู้คืนข้อมูล">${icon('upload', 12)} กู้คืน</button>
+        <button class="reset-btn" onclick="resetAll()" title="รีเซ็ต" style="color: var(--coral)">${icon('refresh', 12)}</button>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab ${state.tab==='shop'?'active':''}" onclick="setTab('shop')">
+        ${icon('bag', 14)} ยังไม่ซื้อ
+      </button>
+      <button class="tab ${state.tab==='history'?'active':''}" onclick="setTab('history')">
+        ${icon('package', 14)} ซื้อแล้ว
+        ${historyCount > 0 ? `<span class="tab-badge num">${historyCount}</span>` : ''}
+      </button>
+    </div>
+  </div>
+  `;
+}
+
+function renderShopTab() {
+  const { shopSpend, fixedTotal, totalSpend, remaining } = compute();
+  const ct = catTotals();
+
+  const segments = [];
+  state.fixed.forEach(f => segments.push({ amount: f.amount, color: f.color }));
+  if (state.savings > 0) segments.push({ amount: state.savings, color: "#a595c4" });
+  if (state.emergency > 0) segments.push({ amount: state.emergency, color: "#8ca7c9" });
+  if (shopSpend > 0) segments.push({ amount: shopSpend, color: "#8fa886" });
+
+  const remainClass = remaining >= 0 ? "pos" : "neg";
+  const remainColor = remaining >= 0 ? "v-sage" : "v-coral";
+
+  // header
+  let html = renderHeader();
+
+  // summary cards + mode toggle
+  html += `
+  <div class="header" style="position: static; padding-top: 0; padding-bottom: 14px; border-top: none;">
+    <div class="mode-toggle">
+      <button class="mode-btn deep ${state.priceMode==='deep'?'active':''}" onclick="setMode('deep')">
+        ${icon('flame', 13)} ราคา Deep
+      </button>
+      <button class="mode-btn avg ${state.priceMode==='avg'?'active':''}" onclick="setMode('avg')">
+        ${icon('chart', 13)} ราคา Avg
+      </button>
+    </div>
+
+    <div class="summary-grid">
+      <div class="summary-card">
+        <div class="summary-label">${icon('bag', 11)} เลือก</div>
+        <div class="summary-value num v-sage">฿${fmt(shopSpend)}</div>
+        <div class="summary-sub">${state.selected.length} ชิ้น</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-label">${icon('trending', 11)} รวมจ่าย</div>
+        <div class="summary-value num v-yellow">฿${fmt(totalSpend)}</div>
+        <div class="summary-sub">ประจำ + ของ + ออม</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-label">${icon('check', 11)} คงเหลือ</div>
+        <div class="summary-value num ${remainColor}">฿${fmt(remaining)}</div>
+        <div class="summary-sub">จาก ฿${fmt(state.salary)}</div>
+      </div>
+    </div>
+  </div>
+  `;
+
+  // budget planner
+  html += `
+  <div class="card card-pad">
+    <div class="section-title">${icon('wallet', 17)} วางแผนงบประมาณ</div>
+
+    <div class="salary-box">
+      <div class="salary-icon-box">${icon('wallet', 20)}</div>
+      <div class="salary-main">
+        <div class="salary-label">เงินเดือน</div>
+        ${state.editingSalary ? `
+          <input type="number" class="salary-input num" id="salary-input" value="${state.salary}" inputmode="numeric"
+            onblur="setSalary(this.value); toggleSalaryEdit()"
+            onkeydown="if(event.key==='Enter'){this.blur();}">
+        ` : `
+          <div class="salary-value num">฿${fmt(state.salary)}</div>
+        `}
+      </div>
+      ${state.editingSalary ? '' : `
+        <button class="salary-edit-btn" onclick="toggleSalaryEdit()">${icon('pencil', 11)} แก้ไข</button>
+      `}
+    </div>
+
+    <div class="budget-info">
+      <span>รวมจ่าย <span class="v num" style="color:var(--coral)">${fmt(totalSpend)}฿</span></span>
+      <span style="color:var(--text-faint)">·</span>
+      <span>คงเหลือ <span class="v num" style="color:${remaining>=0?'var(--sage)':'var(--coral)'}">${fmt(remaining)}฿</span></span>
+    </div>
+
+    <div class="bar">
+      ${segments.map(s => {
+        const pct = state.salary > 0 ? Math.max(0.5, (s.amount / state.salary) * 100) : 0;
+        return `<div class="bar-seg" style="width:${pct}%;background:${s.color}"></div>`;
+      }).join("")}
+    </div>
+
+    <div class="section-sub">ค่าใช้จ่ายประจำ · แตะชื่อเพื่อแก้ไข</div>
+    ${state.fixed.map(f => `
+      <div class="fixed-row">
+        <span class="dot" style="background:${f.color}"></span>
+        <input type="text" class="fixed-name-input" value="${esc(f.name)}"
+          onchange="updateFixedName('${f.id}', this.value)"
+          onblur="if(!this.value.trim())this.value='${esc(f.name)}'">
+        <input type="number" class="fixed-input num" value="${f.amount}" inputmode="numeric"
+          style="color:${f.color}"
+          onchange="updateFixed('${f.id}', this.value)">
+        <span class="currency">฿</span>
+        <button class="x-btn" onclick="removeFixed('${f.id}')">${icon('x', 14)}</button>
+      </div>
+    `).join("")}
+
+    ${state.showAddFixed ? `
+      <div class="add-form">
+        <input type="text" class="text-input" id="new-fixed-name" placeholder="ชื่อรายการ" style="flex:1">
+        <input type="number" class="text-input" id="new-fixed-amt" placeholder="จำนวน" style="width:70px;text-align:right" inputmode="numeric">
+        <button class="btn-confirm" onclick="addFixedSubmit()">${icon('check', 14)}</button>
+        <button class="btn-dismiss" onclick="toggleAddFixed()">${icon('x', 14)}</button>
+      </div>
+    ` : `
+      <button class="add-fixed-btn" onclick="toggleAddFixed()">${icon('plus', 13)} เพิ่มค่าใช้จ่ายประจำ</button>
+    `}
+
+    <div class="two-col">
+      <div>
+        <div class="field-label" style="color:var(--purple)">${icon('heart', 11)} ออมเงิน</div>
+        <input type="number" class="field-input num" style="color:var(--purple)" value="${state.savings}" inputmode="numeric"
+          onchange="setSavings(this.value)">
+      </div>
+      <div>
+        <div class="field-label" style="color:var(--blue)">${icon('shield', 11)} สำรองฉุกเฉิน</div>
+        <input type="number" class="field-input num" style="color:var(--blue)" value="${state.emergency}" inputmode="numeric"
+          onchange="setEmergency(this.value)">
+      </div>
+    </div>
+
+    <div class="net-box ${remainClass}">
+      <span class="net-label">${icon('sparkle', 12)} เงินคงเหลือสุทธิ</span>
+      <span class="net-value num ${remainClass}">฿${fmt(remaining)}</span>
+    </div>
+  </div>
+  `;
+
+  // BREAKDOWN — new feature
+  html += renderBreakdown(fixedTotal, shopSpend, totalSpend);
+
+  // categories
+  ["should", "nice", "big"].forEach(cat => {
+    const meta = CAT_META[cat];
+    const items = state.items.filter(i => i.cat === cat);
+    const t = ct[cat];
+    const allChecked = items.length > 0 && items.every(i => state.selected.includes(i.id));
+    const isEditing = state.editingCat === cat;
+    const selectedInCat = items.filter(i => state.selected.includes(i.id));
+    const buyTotal = selectedInCat.reduce((s, i) => s + (state.priceMode === 'deep' ? i.deep : i.avg), 0);
+
+    html += `
+    <div class="card">
+      <div class="cat-header ${cat}">
+        <div class="cat-title-row">
+          <div class="cat-title-wrap">
+            <div class="cat-icon-box ${cat}">${icon(meta.iconName, 19)}</div>
+            <div>
+              <div class="cat-title">${meta.label}</div>
+              <div class="cat-desc">${meta.desc} · ${t.selCount}/${t.count} เลือก</div>
+            </div>
+          </div>
+          <div class="cat-actions">
+            <button class="cat-btn ${isEditing?'edit-on':''}" onclick="toggleCatEdit('${cat}')">
+              ${isEditing ? icon('check', 12) + ' เสร็จ' : icon('pencil', 12) + ' แก้ไข'}
+            </button>
+            ${!isEditing && items.length > 0 ? `
+              <button class="cat-btn ${allChecked?'all-checked':''}" onclick="selectAllInCat('${cat}')">
+                ${allChecked ? icon('check', 12) + ' ทั้งหมด' : 'เลือกทั้งหมด'}
+              </button>
+            ` : ''}
+          </div>
+        </div>
+        <div class="cat-totals">
+          <span>Deep รวม <span class="v num deep">฿${fmt(t.deepAll)}</span></span>
+          <span>Avg รวม <span class="v num avg">฿${fmt(t.avgAll)}</span></span>
+        </div>
+        ${t.selCount > 0 && !isEditing ? `
+          <div class="cat-totals-sel">
+            <span>${icon('check', 11)} Deep <span class="v num">฿${fmt(t.deepSel)}</span></span>
+            <span>${icon('check', 11)} Avg <span class="v num">฿${fmt(t.avgSel)}</span></span>
+          </div>
+        ` : ''}
+      </div>
+
+      ${isEditing ? `
+        <div class="edit-banner">
+          ${icon('pencil', 12)} แตะรายการเพื่อแก้ไข · แก้ชื่อ ราคา หรือลบได้
+        </div>
+      ` : ''}
+
+      <div class="items">
+        ${items.length === 0 ? `
+          <div style="padding: 20px; text-align: center; color: var(--text-faint); font-size: 13px; font-weight: 300;">
+            ${state.purchases.some(p => p.items.some(i => i.cat === cat))
+              ? 'ไม่มีรายการที่ยังไม่ซื้อในหมวดนี้ · ดูที่แท็บซื้อแล้ว'
+              : 'ยังไม่มีรายการในหมวดนี้'}
+          </div>
+        ` : items.map(item => {
+          const checked = state.selected.includes(item.id);
+          const price = state.priceMode === "deep" ? item.deep : item.avg;
+          const altPrice = state.priceMode === "deep" ? item.avg : item.deep;
+          const edited = isItemEdited(item);
+
+          if (isEditing) {
+            return `
+            <div class="item edit-mode" onclick="openItemEdit(${item.id}, event)">
+              <div class="edit-handle">${icon('pencil', 16)}</div>
+              <div class="item-main">
+                <div class="item-name">${esc(item.name)}</div>
+                ${item.note ? `<div class="item-note">${esc(item.note)}</div>` : ''}
+              </div>
+              <div class="item-right">
+                <div class="item-price ${edited?'edited':''}"><span class="num">฿${fmt(price)}</span></div>
+                ${item.deep !== item.avg ? `<div class="item-alt-price num">${state.priceMode==='deep'?'avg':'deep'} ฿${fmt(altPrice)}</div>` : ''}
+              </div>
+            </div>`;
+          }
+
+          return `
+          <div class="item ${checked?'checked':''}" onclick="toggle(${item.id})">
+            <div class="checkbox ${checked?'checked':''}">${checked?icon('check', 14, 2.5):''}</div>
+            <div class="item-main">
+              <div class="item-name">${esc(item.name)}</div>
+              ${item.note ? `<div class="item-note">${esc(item.note)}</div>` : ''}
+            </div>
+            <div class="item-right">
+              <div class="item-price ${edited?'edited':''}" onclick="openPriceEdit(${item.id}, event)">
+                <span class="num">฿${fmt(price)}</span><span class="edit-icon">${icon('pencil', 11)}</span>
+              </div>
+              ${item.deep !== item.avg ? `<div class="item-alt-price num">${state.priceMode==='deep'?'avg':'deep'} ฿${fmt(altPrice)}</div>` : ''}
+            </div>
+          </div>`;
+        }).join("")}
+      </div>
+
+      ${isEditing ? `
+        <button class="add-item-btn" onclick="openAddItem('${cat}')">
+          ${icon('plus', 14)} เพิ่มรายการใหม่ในหมวด "${meta.label}"
+        </button>
+      ` : ''}
+
+      ${!isEditing && selectedInCat.length > 0 ? `
+        <div class="buy-btn-wrap">
+          <button class="buy-btn" onclick="buyItemsInCat('${cat}')">
+            ${icon('package', 16)}
+            ซื้อสินค้าที่เลือก · ${selectedInCat.length} ชิ้น · ฿${fmt(buyTotal)}
+          </button>
+        </div>
+      ` : ''}
+    </div>`;
+  });
+
+  // grand total
+  const allDeep = state.items.reduce((s, i) => s + i.deep, 0);
+  const allAvg = state.items.reduce((s, i) => s + i.avg, 0);
+
+  html += `
+  <div class="card card-pad">
+    <div class="section-title">${icon('list', 17)} สรุปทั้งหมด</div>
+    <table class="sum-table">
+      <tr>
+        <td class="label">${icon('wallet', 14)} เงินเดือน</td>
+        <td class="num">฿${fmt(state.salary)}</td>
+      </tr>
+      <tr>
+        <td class="label">${icon('receipt', 14)} ค่าใช้จ่ายประจำ (${state.fixed.length} รายการ)</td>
+        <td class="num" style="color:var(--coral)">−฿${fmt(fixedTotal)}</td>
+      </tr>
+      ${state.savings > 0 ? `
+        <tr><td class="label">${icon('heart', 14)} ออมเงิน</td>
+          <td class="num" style="color:var(--purple)">−฿${fmt(state.savings)}</td></tr>
+      ` : ''}
+      ${state.emergency > 0 ? `
+        <tr><td class="label">${icon('shield', 14)} สำรองฉุกเฉิน</td>
+          <td class="num" style="color:var(--blue)">−฿${fmt(state.emergency)}</td></tr>
+      ` : ''}
+      <tr>
+        <td class="label">${icon('bag', 14)} ของที่เลือก (${state.selected.length} ชิ้น) · ${state.priceMode}</td>
+        <td class="num" style="color:var(--sage)">−฿${fmt(shopSpend)}</td>
+      </tr>
+      <tr class="total-row">
+        <td class="label">${icon('sparkle', 15)} เงินคงเหลือสุทธิ</td>
+        <td class="num ${remainClass}">฿${fmt(remaining)}</td>
+      </tr>
+    </table>
+
+    <div class="info-box">
+      <div class="info-title">${icon('chart', 12)} ถ้าเลือกของทุกอย่าง</div>
+      <div class="row">
+        <span>Deep ทั้งหมด</span>
+        <span class="v num" style="color:var(--coral)">฿${fmt(allDeep)}</span>
+      </div>
+      <div class="row">
+        <span>Avg ทั้งหมด</span>
+        <span class="v num" style="color:var(--blue)">฿${fmt(allAvg)}</span>
+      </div>
+      ${allDeep > state.salary ? `
+        <div class="italic">รวมเกินเงินเดือน — ควรทยอยซื้อตามลำดับความสำคัญ</div>
+      ` : ''}
+    </div>
+  </div>
+
+  <div class="footer">
+    บันทึกในเครื่องอัตโนมัติ · ข้อมูลของแต่ละคนแยกกัน ไม่ข้ามเครื่อง<br>
+    แชร์ไฟล์นี้ให้เพื่อนได้เลย ทุกคนมีข้อมูลของตัวเอง
+  </div>
+  `;
+
+  document.getElementById("app").innerHTML = html;
+  if (state.editingSalary) {
+    const si = document.getElementById("salary-input");
+    if (si) { si.focus(); si.select(); }
+  }
+}
+
+function renderBreakdown(fixedTotal, shopSpend, totalSpend) {
+  // breakdown: fixed | savings | emergency | shop items
+  const parts = [
+    { label: 'ค่าใช้จ่ายจำเป็น', desc: `${state.fixed.length} รายการ`, amount: fixedTotal, color: 'var(--coral)', bg: 'var(--coral-surface)', iconName: 'receipt' },
+    { label: 'ออมเงิน', desc: 'เงินออม', amount: state.savings, color: 'var(--purple)', bg: 'var(--purple-surface)', iconName: 'heart' },
+    { label: 'สำรองฉุกเฉิน', desc: 'กันไว้เผื่อฉุกเฉิน', amount: state.emergency, color: 'var(--blue)', bg: 'var(--blue-surface)', iconName: 'shield' },
+    { label: 'ของที่เลือกซื้อ', desc: `${state.selected.length} ชิ้น · ราคา ${state.priceMode}`, amount: shopSpend, color: 'var(--sage)', bg: 'var(--sage-surface)', iconName: 'bag' },
+  ].filter(p => p.amount > 0);
+
+  if (parts.length === 0 || totalSpend === 0) return '';
+
+  // find biggest
+  const maxAmount = Math.max(...parts.map(p => p.amount));
+
+  return `
+  <div class="card card-pad">
+    <div class="section-title">${icon('piechart', 17)} สัดส่วนค่าใช้จ่าย</div>
+    <div style="font-size: 12px; color: var(--text-soft); margin-bottom: 14px; font-weight: 300;">
+      รวมทั้งหมด <span style="color: var(--text); font-weight: 700;" class="num">฿${fmt(totalSpend)}</span> จากเงินเดือน <span class="num">฿${fmt(state.salary)}</span>
+      ${state.salary > 0 ? ` (${Math.round((totalSpend/state.salary)*100)}%)` : ''}
+    </div>
+
+    <div class="breakdown">
+      ${parts.map(p => {
+        const pct = totalSpend > 0 ? Math.round((p.amount / totalSpend) * 100) : 0;
+        const salaryPct = state.salary > 0 ? Math.round((p.amount / state.salary) * 100) : 0;
+        const isBiggest = p.amount === maxAmount && parts.length > 1;
+        return `
+          <div class="breakdown-item">
+            <div class="breakdown-icon" style="background:${p.bg}; color:${p.color}">
+              ${icon(p.iconName, 16)}
+            </div>
+            <div class="breakdown-bar-wrap">
+              <div class="breakdown-top">
+                <div class="breakdown-label">
+                  ${esc(p.label)}
+                  ${isBiggest ? `<span class="biggest-chip">${icon('flame', 10)} สูงสุด</span>` : ''}
+                </div>
+                <div class="breakdown-amount num">฿${fmt(p.amount)}</div>
+              </div>
+              <div class="breakdown-bar">
+                <div class="breakdown-fill" style="width:${pct}%;background:${p.color}"></div>
+              </div>
+              <div class="breakdown-percent">
+                <span style="color:${p.color}; font-weight: 600">${pct}%</span> ของค่าใช้จ่ายรวม
+                · <span class="num">${salaryPct}%</span> ของเงินเดือน
+                <span style="color:var(--text-faint); margin-left: 4px;">· ${p.desc}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  </div>
+  `;
+}
+
+function renderHistoryTab() {
+  let html = renderHeader();
+
+  if (state.purchases.length === 0) {
+    html += `
+    <div class="history-empty">
+      <div class="history-empty-icon">${icon('package', 28)}</div>
+      <div class="history-empty-title">ยังไม่มีประวัติการซื้อ</div>
+      <div class="history-empty-desc">
+        เมื่อกดปุ่ม "ซื้อสินค้าที่เลือก" ในแท็บ "ยังไม่ซื้อ"<br>
+        รายการจะถูกบันทึกไว้ที่นี่พร้อมวันเวลา
+      </div>
+    </div>
+    `;
+    document.getElementById("app").innerHTML = html;
+    return;
+  }
+
+  // summary
+  const totalBought = state.purchases.reduce((s, p) => s + p.items.reduce((ss, i) => ss + i.price, 0), 0);
+  const totalCount = state.purchases.reduce((s, p) => s + p.items.length, 0);
+
+  html += `
+  <div class="card card-pad" style="margin-top: 14px;">
+    <div class="section-title">${icon('package', 17)} ประวัติการซื้อ</div>
+    <div class="summary-grid">
+      <div class="summary-card">
+        <div class="summary-label">${icon('package', 11)} รวม</div>
+        <div class="summary-value num" style="color: var(--purple)">${totalCount}</div>
+        <div class="summary-sub">ชิ้น</div>
+      </div>
+      <div class="summary-card" style="grid-column: span 2">
+        <div class="summary-label">${icon('wallet', 11)} ใช้ไปทั้งสิ้น</div>
+        <div class="summary-value num" style="color: var(--coral)">฿${fmt(totalBought)}</div>
+        <div class="summary-sub">${state.purchases.length} ครั้ง</div>
+      </div>
+    </div>
+  </div>
+  `;
+
+  // each batch
+  state.purchases.forEach(batch => {
+    const total = batch.items.reduce((s, i) => s + i.price, 0);
+    html += `
+    <div class="history-batch">
+      <div class="batch-header">
+        <div class="batch-header-top">
+          <div>
+            <div class="batch-date">
+              ${icon('clock', 14)} ${formatDate(batch.date)}
+            </div>
+            <div class="batch-time">${formatTime(batch.date)} · ราคา ${batch.priceMode === 'deep' ? 'Deep' : 'Avg'}</div>
+          </div>
+          <button class="batch-restore-all" onclick="restoreBatch('${batch.id}')">
+            ${icon('arrowLeft', 11)} ย้อนคืนทั้งหมด
+          </button>
+        </div>
+        <div class="batch-stats">
+          <span><span class="v num">${batch.items.length}</span> ชิ้น</span>
+          <span>รวม <span class="v num" style="color: var(--sage)">฿${fmt(total)}</span></span>
+        </div>
+      </div>
+      <div>
+        ${batch.items.map(it => `
+          <div class="history-item">
+            <div class="history-item-main">
+              <div class="history-item-name">${esc(it.name)}</div>
+              ${it.note ? `<div class="history-item-note">${esc(it.note)}</div>` : ''}
+            </div>
+            <div style="text-align: right;">
+              <div class="history-item-price num">฿${fmt(it.price)}</div>
+              <div class="history-item-mode">${CAT_META[it.cat].label}</div>
+            </div>
+            <button class="restore-btn" onclick="restoreOneItem('${batch.id}', ${it.originalId})">
+              ${icon('arrowLeft', 11)} ยังไม่ซื้อ
+            </button>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+    `;
+  });
+
+  html += `
+  <div class="footer">
+    กด "ย้อนคืน" เพื่อย้ายรายการกลับไปที่แท็บ "ยังไม่ซื้อ"
+  </div>
+  `;
+
+  document.getElementById("app").innerHTML = html;
+}
+
+// INIT
+load(); renderApp(); renderModal();
+</script>
+
+</body>
+</html>
